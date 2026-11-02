@@ -29,6 +29,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html,body{overflow-x:hidden;overflow-x:clip;max-width:100%}
 html.lenis,html.lenis body{height:auto}
 html.lenis{scroll-behavior:auto}
 .lenis.lenis-stopped{overflow:hidden}
@@ -353,6 +354,8 @@ body.ready .float-cta{transform:scale(1)}
   .final::before{width:480px;height:480px}
   .float-cta{right:16px;bottom:16px;width:54px;height:54px}
   .nav-links{max-height:calc(100svh - 78px);overflow:auto}
+  .reveal.from-right,.reveal.from-left{transform:translateY(36px)}
+  .reveal.from-right.in,.reveal.from-left.in{transform:none}
 }
 @media (max-width:560px){
   .tabs{margin:0 -16px 24px;padding:0 16px 4px}
