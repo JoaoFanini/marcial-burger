@@ -1,0 +1,853 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marcial Burger</title>
+<meta name="description" content="Marcial Hamburgueria e Açaí — hambúrguer artesanal, self-service, marmitas, porções, açaí e bebidas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1100&q=80">
+<meta name="theme-color" content="#0A0A0B">
+<script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js" defer></script>
+<style>
+:root{
+  --bg:#0A0A0B;
+  --surface:#131315;
+  --surface-2:#1B1B1E;
+  --line:rgba(255,255,255,.08);
+  --text:#F6F2ED;
+  --muted:#A29C95;
+  --orange:#FF6B1A;
+  --orange-2:#FF9440;
+  --orange-deep:#C2410C;
+  --glow:rgba(255,107,26,.35);
+  --radius:14px;
+  --max:1200px;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html.lenis,html.lenis body{height:auto}
+html.lenis{scroll-behavior:auto}
+.lenis.lenis-stopped{overflow:hidden}
+*{-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',system-ui,sans-serif;line-height:1.55;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body.locked{overflow:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+.container{width:100%;max-width:var(--max);margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;line-height:.98;letter-spacing:-.02em}
+.accent{color:var(--orange)}
+
+/* ---------- imagem com fallback ---------- */
+.ph{position:relative;overflow:hidden;background:radial-gradient(circle at 50% 40%,#3a2214 0%,#1a1210 55%,#121112 100%)}
+.ph img{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease),opacity .4s}
+.ph img.broken{opacity:0}
+
+/* ---------- LOADER ---------- */
+.loader{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;transition:transform 1s cubic-bezier(.77,0,.18,1)}
+.loader::before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,var(--glow) 0%,transparent 65%);opacity:.6}
+body.loaded .loader{transform:translateY(-100%)}
+.loader-inner{position:relative;display:flex;flex-direction:column;align-items:center;gap:28px}
+.lb{display:flex;flex-direction:column;align-items:center;gap:3px;height:150px;justify-content:flex-end}
+.lb span{display:block;opacity:0;transform:translateY(-90px);animation:drop .55s cubic-bezier(.3,1.5,.5,1) forwards}
+.lb .bun-top{width:124px;height:50px;border-radius:64px 64px 12px 12px;background:
+  radial-gradient(ellipse 3px 2px at 30% 35%,#fff3d6 90%,transparent),
+  radial-gradient(ellipse 3px 2px at 52% 22%,#fff3d6 90%,transparent),
+  radial-gradient(ellipse 3px 2px at 70% 40%,#fff3d6 90%,transparent),
+  radial-gradient(ellipse 3px 2px at 42% 55%,#fff3d6 90%,transparent),
+  radial-gradient(ellipse 3px 2px at 62% 62%,#fff3d6 90%,transparent),
+  linear-gradient(180deg,#F2A54C,#C66A1C);animation-delay:1.05s}
+.lb .lettuce{width:134px;height:12px;border-radius:10px;background:#6DBE3B;animation-delay:.85s}
+.lb .cheese{width:128px;height:9px;border-radius:3px;background:#FFC531;position:relative;animation-delay:.65s}
+.lb .cheese::after{content:"";position:absolute;left:30px;top:8px;border:8px solid transparent;border-top:12px solid #FFC531}
+.lb .patty{width:120px;height:24px;border-radius:12px;background:linear-gradient(180deg,#5B3320,#3A1E12);animation-delay:.45s}
+.lb .bun-bottom{width:122px;height:22px;border-radius:6px 6px 20px 20px;background:linear-gradient(180deg,#E08A36,#B85E17);animation-delay:.25s}
+@keyframes drop{to{opacity:1;transform:translateY(0)}}
+.wordmark{text-align:center;overflow:hidden}
+.wordmark b{display:block;font-family:'Bricolage Grotesque';font-weight:800;font-size:44px;letter-spacing:.04em;transform:translateY(110%);animation:up .7s var(--ease) 1.35s forwards}
+.wordmark small{display:block;font-weight:600;font-size:13px;letter-spacing:.42em;color:var(--orange);transform:translateY(200%);animation:up .7s var(--ease) 1.5s forwards}
+@keyframes up{to{transform:translateY(0)}}
+.loader-bar{width:180px;height:2px;background:var(--line);border-radius:2px;overflow:hidden}
+.loader-bar i{display:block;height:100%;width:0;background:var(--orange);animation:fill 2.1s var(--ease) forwards}
+@keyframes fill{to{width:100%}}
+
+/* ---------- HEADER ---------- */
+.header{position:fixed;top:0;left:0;right:0;z-index:50;transform:translateY(-100%);transition:background .4s,backdrop-filter .4s,border-color .4s;border-bottom:1px solid transparent}
+body.ready .header{transform:none;transition:transform .9s var(--ease),background .4s,backdrop-filter .4s,border-color .4s}
+.header.scrolled{background:rgba(10,10,11,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-color:var(--line)}
+.nav{height:78px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Bricolage Grotesque';font-weight:800;font-size:20px;letter-spacing:.02em}
+.logo-mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(140deg,var(--orange-2),var(--orange-deep));display:grid;place-items:center}
+.logo-mark svg{width:22px;height:22px}
+.logo span em{font-style:normal;color:var(--orange)}
+.nav-links{display:flex;gap:36px;font-size:15px;color:#d8d2cb}
+.nav-links a{position:relative;transition:color .25s}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:-6px;width:0;height:2px;background:var(--orange);transition:width .3s var(--ease)}
+.nav-links a:hover{color:#fff}
+.nav-links a:hover::after,.nav-links a.active::after{width:100%}
+.nav-links a.active{color:var(--orange)}
+.nav-right{display:flex;align-items:center;gap:14px}
+.icon-btn{width:42px;height:42px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;transition:border-color .25s,background .25s}
+.icon-btn:hover{border-color:var(--orange);background:rgba(255,107,26,.08)}
+.icon-btn svg{width:18px;height:18px}
+.menu-toggle{display:none}
+
+/* ---------- BOTÕES ---------- */
+.btn{display:inline-flex;align-items:center;gap:10px;padding:15px 28px;border-radius:10px;font-weight:600;font-size:15px;transition:transform .25s var(--ease),box-shadow .3s,background .3s,color .3s}
+.btn-primary{background:linear-gradient(135deg,var(--orange-2),var(--orange));color:#fff;box-shadow:0 10px 30px -10px var(--glow)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 40px -10px rgba(255,107,26,.6)}
+.btn-ghost{background:var(--surface-2);color:#fff;border:1px solid var(--line)}
+.btn-ghost:hover{border-color:rgba(255,107,26,.5);transform:translateY(-2px)}
+.btn-link{color:var(--orange);padding:15px 8px}
+.btn-link:hover{color:var(--orange-2)}
+.btn-sm{padding:11px 20px;font-size:14px}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;min-height:100vh;min-height:100svh;padding:120px 0 40px;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.hero::before{content:"";position:absolute;right:-12%;top:8%;width:820px;height:820px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,26,.22) 0%,rgba(255,107,26,.06) 40%,transparent 68%);pointer-events:none}
+.hero::after{content:"";position:absolute;right:4%;top:14%;width:640px;height:640px;border-radius:50%;border:1px solid rgba(255,140,64,.12);pointer-events:none}
+.hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1.05fr;align-items:center;gap:20px}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;background:rgba(255,107,26,.1);border:1px solid rgba(255,107,26,.28);font-size:13px;font-weight:500;color:var(--orange-2);margin-bottom:26px}
+.badge i{width:6px;height:6px;border-radius:50%;background:var(--orange);box-shadow:0 0 10px var(--orange)}
+.hero h1{font-size:clamp(48px,6.6vw,92px);margin-bottom:26px}
+.line{display:block;overflow:hidden;padding-bottom:.06em}
+.line > span{display:inline-block;transform:translateY(110%)}
+.hero p.lead{font-size:17px;color:var(--muted);max-width:430px;margin-bottom:36px}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.hero-visual{position:relative;height:min(600px,62vh);display:grid;place-items:center}
+.hero-visual::before{content:"";position:absolute;width:78%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(255,107,26,.45),transparent 62%);filter:blur(30px);opacity:0;transition:opacity 1.5s .6s}
+body.ready .hero-visual::before{opacity:1;animation:pulse 5s ease-in-out 2s infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:.75}}
+.ring{position:absolute;width:92%;aspect-ratio:1;border-radius:50%;border:1px dashed rgba(255,140,64,.25);opacity:0;transform:scale(.6)}
+body.ready .ring{animation:ringIn 1.4s var(--ease) .4s forwards,spin 60s linear 1.8s infinite}
+@keyframes ringIn{to{opacity:1;transform:scale(1)}}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.hero-img{position:relative;width:min(560px,100%);aspect-ratio:1;border-radius:50%;
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 52%,transparent 71%);mask-image:radial-gradient(circle at 50% 50%,#000 52%,transparent 71%);
+  will-change:transform;transition:transform .6s var(--ease)}
+.hero-img img{backface-visibility:hidden;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .55s var(--ease),transform .8s var(--ease)}
+.hero-img img.out{opacity:0;transform:scale(1.08) rotate(-4deg)}
+.seed{position:absolute;width:9px;height:5px;border-radius:50%;background:#f3dfb8;opacity:.75;pointer-events:none;animation:float 6s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-16px) rotate(30deg)}}
+.hero-bottom{position:relative;z-index:2;margin-top:28px;display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap}
+.stats{display:flex;align-items:center;gap:0}
+.stat{display:flex;align-items:center;gap:12px;padding:0 26px}
+.stat:first-child{padding-left:0}
+.stat + .stat{border-left:1px solid var(--line)}
+.stat-ico{width:38px;height:38px;border-radius:9px;background:rgba(255,107,26,.12);display:grid;place-items:center;color:var(--orange)}
+.stat-ico svg{width:18px;height:18px}
+.stat b{display:block;font-size:14px;font-weight:600}
+.stat small{display:block;font-size:12.5px;color:var(--muted)}
+.thumbs{display:flex;gap:14px;align-items:flex-end}
+.thumb{position:relative;width:78px;height:78px;border-radius:12px;border:1px solid var(--line);overflow:hidden;opacity:.6;transition:transform .35s var(--ease),opacity .3s,border-color .3s}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.thumb:hover{opacity:.9}
+.thumb.active{opacity:1;border-color:var(--orange);transform:translateY(-10px)}
+.thumb-wrap{position:relative}
+.thumb-wrap::before{content:"";position:absolute;left:50%;top:-22px;transform:translateX(-50%);border:6px solid transparent;border-top:7px solid var(--orange);opacity:0;transition:opacity .3s}
+.thumb-wrap.active::before{opacity:1}
+
+/* intro do hero (dispara depois do loader) */
+.hero .fade{opacity:0;transform:translateY(24px)}
+body.ready .hero .line > span{animation:up .9s var(--ease) forwards}
+body.ready .hero .line:nth-child(2) > span{animation-delay:.1s}
+body.ready .hero .line:nth-child(3) > span{animation-delay:.2s}
+body.ready .hero .fade{animation:fadeUp .9s var(--ease) forwards}
+body.ready .hero .d1{animation-delay:.3s}
+body.ready .hero .d2{animation-delay:.42s}
+body.ready .hero .d3{animation-delay:.55s}
+body.ready .hero .d4{animation-delay:.7s}
+.hero-visual .hero-img{opacity:0;transform:scale(.85) rotate(-8deg)}
+body.ready .hero-visual .hero-img{animation:popIn 1.2s var(--ease) .15s forwards}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{to{opacity:1;transform:scale(1) rotate(0)}}
+
+/* ---------- MARQUEE ---------- */
+.marquee{opacity:0;transform:translateY(30px);transition:opacity .9s var(--ease) .9s,transform .9s var(--ease) .9s}
+body.ready .marquee{opacity:1;transform:none}
+.marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--surface);padding:20px 0;overflow:hidden}
+.marquee-track{display:flex;gap:48px;width:max-content;animation:marquee 32s linear infinite}
+.marquee-track span{display:flex;align-items:center;gap:48px;font-family:'Bricolage Grotesque';font-weight:800;font-size:26px;text-transform:uppercase;white-space:nowrap;color:#e9e2da}
+.marquee-track span::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--orange)}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+/* ---------- SEÇÕES ---------- */
+section{position:relative}
+.section{padding:120px 0}
+.eyebrow{display:inline-block;font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin-bottom:16px}
+.section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-bottom:48px;flex-wrap:wrap}
+.section-head h2{font-size:clamp(36px,4.6vw,60px);max-width:560px}
+.section-head p{color:var(--muted);max-width:360px}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .9s var(--ease),transform .9s var(--ease);transition-delay:var(--d,0s)}
+.reveal.from-left{transform:translateX(-60px)}
+.reveal.from-right{transform:translateX(60px)}
+.reveal.zoom{transform:scale(.92)}
+.reveal.in{opacity:1;transform:none}
+/* títulos palavra por palavra */
+.split .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
+.split .w>span{display:inline-block;transform:translateY(110%) rotate(4deg);transform-origin:left bottom;transition:transform 1s var(--ease);transition-delay:calc(var(--i)*70ms)}
+.split.in .w>span{transform:none}
+/* imagens que abrem como cortina */
+.clip{clip-path:inset(100% 0 0 0);transition:clip-path 1.1s cubic-bezier(.77,0,.18,1);transition-delay:var(--d,0s)}
+.clip img{transform:scale(1.25);transition:transform 1.4s var(--ease),opacity .4s;transition-delay:var(--d,0s)}
+.clip.in{clip-path:inset(0 0 0 0)}
+.clip.in img{transform:scale(1)}
+/* linha laranja que cresce */
+.bar-in{display:block;height:2px;width:0;background:var(--orange);margin-top:22px;transition:width 1.2s var(--ease) .3s}
+.bar-in.in{width:72px}
+
+/* ---------- CARDÁPIO ---------- */
+.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:36px}
+.tab{padding:11px 22px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:14px;font-weight:500;color:#cfc8c0;transition:all .3s var(--ease)}
+.tab:hover{border-color:rgba(255,107,26,.45);color:#fff}
+.tab.active{background:var(--orange);border-color:var(--orange);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;transition:transform .4s var(--ease),border-color .3s,box-shadow .4s}
+@media (hover:hover){.card:hover{transform:translateY(-6px);border-color:rgba(255,107,26,.35);box-shadow:0 24px 50px -24px rgba(255,107,26,.35)}}
+.card .ph{aspect-ratio:4/3}
+@media (hover:hover){.card:hover .ph img{transform:scale(1.07)}}
+.card-tag{position:absolute;top:12px;left:12px;z-index:2;padding:5px 11px;border-radius:999px;background:rgba(10,10,11,.75);backdrop-filter:blur(6px);font-size:11.5px;font-weight:600;color:var(--orange-2)}
+.card-body{padding:18px 18px 20px;display:flex;flex-direction:column;flex:1}
+.card h3{font-size:20px;letter-spacing:-.01em;margin-bottom:6px;line-height:1.15}
+.card p{font-size:13.5px;color:var(--muted);margin-bottom:18px;flex:1}
+.card-foot{display:flex;align-items:center;justify-content:space-between}
+.price{font-family:'Bricolage Grotesque';font-weight:800;font-size:20px}
+.price small{font-family:'Outfit';font-weight:500;font-size:12px;color:var(--muted);margin-right:4px}
+.add{width:40px;height:40px;border-radius:10px;background:rgba(255,107,26,.12);color:var(--orange);display:grid;place-items:center;transition:background .3s,color .3s,transform .3s var(--ease)}
+@media (hover:hover){.add:hover{background:var(--orange);color:#fff;transform:rotate(90deg)}}
+.add svg{width:18px;height:18px}
+.card:active{transform:scale(.98)}
+.grid .card{animation:cardIn .7s var(--ease) both}
+.grid:not(.in) .card{animation-play-state:paused}
+@keyframes cardIn{from{opacity:0;transform:translateY(50px) scale(.94);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+
+/* ---------- SCROLL HORIZONTAL ---------- */
+.hscroll{position:relative;background:linear-gradient(180deg,var(--bg),#100c0a 30%,#100c0a 70%,var(--bg))}
+.hs-sticky{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+.hs-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:40px}
+.hs-head h2{font-size:clamp(36px,4.6vw,60px)}
+.hs-progress{width:200px;height:2px;background:var(--line);border-radius:2px;overflow:hidden;flex-shrink:0}
+.hs-progress i{display:block;height:100%;width:0;background:var(--orange)}
+.hs-track{transform:translate3d(0,0,0);display:flex;gap:24px;padding-left:max(24px,calc((100vw - var(--max))/2 + 24px));padding-right:24px;will-change:transform}
+.panel{position:relative;flex:0 0 min(460px,82vw);height:min(520px,58vh);border-radius:20px;overflow:hidden;border:1px solid var(--line)}
+.panel .ph{position:absolute;inset:0}
+.panel::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,11,0) 30%,rgba(10,10,11,.92) 100%)}
+.panel-num{position:absolute;top:22px;left:24px;z-index:2;font-family:'Bricolage Grotesque';font-weight:800;font-size:15px;color:var(--orange)}
+.panel-body{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:28px}
+.panel h3{font-size:34px;margin-bottom:10px}
+.panel p{color:#cfc8c0;font-size:15px;max-width:340px}
+.panel .ph img{transform:translateX(var(--px,0px)) scale(1.18);transition:opacity .4s}
+.panel h3,.panel p,.panel-num{transition:transform .8s var(--ease),opacity .8s}
+.panel:not(.seen) h3,.panel:not(.seen) p,.panel:not(.seen) .panel-num{opacity:0;transform:translateY(30px)}
+.panel.seen p{transition-delay:.12s}
+
+/* ---------- HORÁRIO ---------- */
+.hours{position:relative;border-radius:24px;overflow:hidden;background:linear-gradient(120deg,#1a100a 0%,#140d09 50%,#0f0b09 100%);border:1px solid rgba(255,107,26,.2);padding:64px;display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center}
+.hours::before{content:"";position:absolute;right:-120px;top:-120px;width:440px;height:440px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,26,.28),transparent 65%)}
+.hours h2{font-size:clamp(36px,4.4vw,56px);margin-bottom:18px;position:relative}
+.hours p{color:var(--muted);max-width:420px;margin-bottom:30px;position:relative}
+.hours-list{position:relative;display:grid;gap:14px}
+.hour-item{display:flex;align-items:center;justify-content:space-between;padding:22px 24px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid var(--line)}
+.hour-item span{display:flex;align-items:center;gap:12px;color:#d8d2cb;font-weight:500}
+.hour-item b{font-family:'Bricolage Grotesque';font-weight:800;font-size:24px}
+.hour-item b em{font-style:normal;color:var(--orange)}
+
+/* ---------- INSTAGRAM ---------- */
+.insta-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.insta-grid a{position:relative;aspect-ratio:1;border-radius:var(--radius)}
+.insta-grid a::after{content:"";position:absolute;inset:0;background:rgba(255,107,26,.0);transition:background .3s}
+.insta-grid a:hover::after{background:rgba(255,107,26,.22)}
+.insta-grid a:hover img{transform:scale(1.06)}
+
+/* ---------- CTA FINAL ---------- */
+.final{text-align:center;padding:140px 0 120px;position:relative;overflow:hidden}
+.final::before{content:"";position:absolute;left:50%;top:50%;width:760px;height:760px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,107,26,.18),transparent 62%)}
+.final h2{position:relative;font-size:clamp(44px,7vw,104px);margin-bottom:22px}
+.final p{position:relative;color:var(--muted);max-width:440px;margin:0 auto 38px}
+.final .hero-ctas{justify-content:center;position:relative}
+
+/* ---------- FOOTER ---------- */
+.footer{border-top:1px solid var(--line);padding:48px 0 36px}
+.footer-row{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.footer-links{display:flex;gap:28px;color:var(--muted);font-size:14px}
+.footer-links a:hover{color:var(--orange)}
+.copy{margin-top:28px;padding-top:24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:#6f6a64}
+
+/* ---------- WHATSAPP FLUTUANTE ---------- */
+.float-cta{position:fixed;right:22px;bottom:22px;z-index:40;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,var(--orange-2),var(--orange));display:grid;place-items:center;box-shadow:0 14px 34px -8px rgba(255,107,26,.6);transform:scale(0);transition:transform .5s var(--ease)}
+body.ready .float-cta{transform:scale(1)}
+.float-cta:hover{transform:scale(1.08)}
+.float-cta svg{width:26px;height:26px}
+
+/* ---------- RESPONSIVO ---------- */
+@media (max-width:1080px){
+  .grid{grid-template-columns:repeat(3,1fr)}
+  .stat{padding:0 18px}
+}
+@media (max-width:900px){
+  .nav-links{position:fixed;inset:78px 0 auto 0;flex-direction:column;gap:0;background:rgba(10,10,11,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:8px 24px 20px;transform:translateY(-12px);opacity:0;pointer-events:none;transition:all .35s var(--ease)}
+  .nav-links.open{transform:none;opacity:1;pointer-events:auto}
+  .nav-links a{padding:14px 0;border-bottom:1px solid var(--line);font-size:17px}
+  .nav-links a::after{display:none}
+  .menu-toggle{display:grid}
+  .nav-right .btn{display:none}
+  .hero{padding-top:110px;min-height:auto}
+  .hero-grid{grid-template-columns:1fr}
+  .hero-visual{order:-1;height:auto;margin:-10px auto 0;width:min(420px,92%)}
+  .hero::before{right:-40%;top:0;width:600px;height:600px}
+  .hero::after{display:none}
+  .hero-bottom{flex-direction:column;align-items:flex-start}
+  .stats{flex-wrap:wrap;gap:16px 0}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .hours{grid-template-columns:1fr;padding:40px 28px}
+  .insta-grid{grid-template-columns:repeat(2,1fr)}
+  .section{padding:90px 0}
+}
+@media (max-width:560px){
+  .container{padding:0 16px}
+  .hero h1{font-size:clamp(42px,12vw,56px)}
+  .hero p.lead{font-size:16px}
+  .stat{padding:0 14px}
+  .stat:nth-child(3){border-left:0;padding-left:0}
+  .thumbs{gap:10px}
+  .thumb{width:64px;height:64px}
+  .grid{grid-template-columns:1fr 1fr;gap:12px}
+  .card-body{padding:14px}
+  .card h3{font-size:16px}
+  .card p{font-size:12.5px;margin-bottom:12px}
+  .price{font-size:17px}
+  .add{width:34px;height:34px}
+  .hs-head{flex-direction:column;align-items:flex-start}
+  .panel h3{font-size:28px}
+  .footer-links{flex-wrap:wrap;gap:16px}
+}
+@media (max-width:900px){
+  @keyframes cardIn{from{opacity:0;transform:translateY(40px) scale(.96)}to{opacity:1;transform:none}}
+  .hero-visual::before{filter:none;background:radial-gradient(circle,rgba(255,107,26,.38),transparent 60%)}
+  .header.scrolled{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(10,10,11,.96)}
+  .card-tag{backdrop-filter:none;background:rgba(10,10,11,.85)}
+  .hero::before{width:520px;height:520px}
+  .ring{width:96%}
+  .seed:nth-of-type(n+9){display:none}
+  .hero-ctas .btn{flex:1;justify-content:center}
+  .hero-bottom{gap:22px;margin-top:34px}
+  .thumbs{width:100%;justify-content:space-between;padding-top:14px}
+  .thumb-wrap{flex:1;max-width:84px}
+  .thumb{width:100%;height:auto;aspect-ratio:1}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;margin:0 -24px 28px;padding:0 24px 4px;scrollbar-width:none;scroll-snap-type:x mandatory}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex-shrink:0;scroll-snap-align:start}
+  .section-head{margin-bottom:32px}
+  .hs-head{margin-bottom:26px}
+  .panel{height:min(480px,62svh)}
+  .hours{padding:36px 22px}
+  .hour-item{padding:18px}
+  .hour-item b{font-size:20px}
+  .final{padding:100px 0 90px}
+  .final::before{width:480px;height:480px}
+  .float-cta{right:16px;bottom:16px;width:54px;height:54px}
+  .nav-links{max-height:calc(100svh - 78px);overflow:auto}
+}
+@media (max-width:560px){
+  .tabs{margin:0 -16px 24px;padding:0 16px 4px}
+  .badge{font-size:12px;padding:7px 13px;margin-bottom:20px}
+  .hero{padding-top:96px}
+  .hero h1{margin-bottom:18px}
+  .hero p.lead{margin-bottom:26px}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px;width:100%}
+  .stat,.stat:first-child{padding:0;border-left:0!important}
+  .stat:nth-child(3){grid-column:1/-1}
+  .card p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .card-tag{font-size:10.5px;padding:4px 9px;top:8px;left:8px}
+  .section{padding:72px 0}
+  .marquee-track span{font-size:20px;gap:32px}
+  .marquee-track{gap:32px}
+  .hours h2{font-size:34px}
+  .final h2{font-size:clamp(40px,11vw,56px)}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}
+  .marquee-track{animation:none}
+}
+</style>
+</head>
+<body class="locked">
+
+<!-- ========== LOADER ========== -->
+<div class="loader" aria-hidden="true">
+  <div class="loader-inner">
+    <div class="lb">
+      <span class="bun-top"></span>
+      <span class="lettuce"></span>
+      <span class="cheese"></span>
+      <span class="patty"></span>
+      <span class="bun-bottom"></span>
+    </div>
+    <div class="wordmark"><b>MARCIAL</b><small>BURGER</small></div>
+    <div class="loader-bar"><i></i></div>
+  </div>
+</div>
+
+<!-- ========== HEADER ========== -->
+<header class="header" id="header">
+  <div class="container nav">
+    <a href="#inicio" class="logo" aria-label="Marcial Burger">
+      <span class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l4 3 5-6 5 6 4-3-2 9H5L3 7z"/><path d="M5 19h14"/></svg>
+      </span>
+      <span>MARCIAL <em>BURGER</em></span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#inicio" class="active">Início</a>
+      <a href="#cardapio">Cardápio</a>
+      <a href="#mais">Self-service</a>
+      <a href="#horario">Horários</a>
+      <a href="#contato">Contato</a>
+    </nav>
+    <div class="nav-right">
+      <a class="icon-btn" href="https://www.instagram.com/marcialburger/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+      </a>
+      <a class="btn btn-primary btn-sm" href="https://contate.me/marcialburger" target="_blank" rel="noopener">Pedir agora</a>
+      <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Abrir menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- ========== HERO ========== -->
+<section class="hero" id="inicio">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-copy" id="heroCopy">
+        <div class="badge fade d1"><i></i>Hamburgueria · Self-service · Açaí</div>
+        <h1>
+          <span class="line"><span>Uma experiência</span></span>
+          <span class="line"><span class="accent">completa de</span></span>
+          <span class="line"><span class="accent">sabores.</span></span>
+        </h1>
+        <p class="lead fade d2">Hambúrguer artesanal feito na chapa, self-service e marmitas, porções, bebidas e açaí. Tudo num lugar só.</p>
+        <div class="hero-ctas fade d3">
+          <a class="btn btn-primary" href="https://contate.me/marcialburger" target="_blank" rel="noopener">Fazer pedido
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="#cardapio">Ver cardápio</a>
+        </div>
+      </div>
+
+      <div class="hero-visual" id="heroVisual">
+        <span class="ring" aria-hidden="true"></span>
+        <div class="hero-img ph" id="heroImg">
+          <img id="heroA" src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1100&q=80" alt="Hambúrguer artesanal Marcial">
+          <img id="heroB" class="out" src="" alt="" aria-hidden="true">
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-bottom fade d4">
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M9 17h6l-3-7H8M14 6h3l2 6"/></svg></span>
+          <div><b>Delivery</b><small>até 22h45</small></div>
+        </div>
+        <div class="stat">
+          <span class="stat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-3 2-4 2-7 1.5 1 3 2 3 4"/></svg></span>
+          <div><b>Artesanal</b><small>Feito na chapa</small></div>
+        </div>
+        <div class="stat">
+          <span class="stat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+          <div><b>18h às 22h</b><small>Hamburgueria</small></div>
+        </div>
+      </div>
+      <div class="thumbs" id="thumbs"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== MARQUEE ========== -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Hambúrguer artesanal</span><span>Self-service</span><span>Marmitas</span><span>Porções</span><span>Açaí</span><span>Bebidas</span>
+    <span>Hambúrguer artesanal</span><span>Self-service</span><span>Marmitas</span><span>Porções</span><span>Açaí</span><span>Bebidas</span>
+  </div>
+</div>
+
+<!-- ========== CARDÁPIO ========== -->
+<section class="section" id="cardapio">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow reveal">Cardápio</span>
+        <h2 data-split>Escolha o seu <span class="accent">favorito</span></h2>
+        <span class="bar-in"></span>
+      </div>
+      <p class="reveal from-right" style="--d:.2s">Do clássico ao monstro de três carnes. Pede pelo WhatsApp e a gente prepara na hora.</p>
+    </div>
+    <div class="tabs reveal" id="tabs" role="tablist">
+      <button class="tab active" data-cat="burger">Hambúrgueres</button>
+      <button class="tab" data-cat="porcao">Porções</button>
+      <button class="tab" data-cat="acai">Açaí</button>
+      <button class="tab" data-cat="bebida">Bebidas</button>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+</section>
+
+<!-- ========== SCROLL HORIZONTAL ========== -->
+<section class="hscroll" id="mais">
+  <div class="hs-sticky">
+    <div class="container hs-head">
+      <div>
+        <span class="eyebrow">Muito além do hambúrguer</span>
+        <h2 data-split>Do almoço à <span class="accent">noite</span></h2>
+      </div>
+      <div class="hs-progress"><i id="hsBar"></i></div>
+    </div>
+    <div class="hs-track" id="hsTrack"></div>
+  </div>
+</section>
+
+<!-- ========== HORÁRIO ========== -->
+<section class="section" id="horario">
+  <div class="container">
+    <div class="hours reveal zoom">
+      <div>
+        <span class="eyebrow">Horários</span>
+        <h2 data-split>Bateu a fome? <span class="accent">Hoje tem Marcial.</span></h2>
+        <p>Peça pelo WhatsApp e receba quentinho em casa, ou venha comer com a gente.</p>
+        <a class="btn btn-primary" href="https://contate.me/marcialburger" target="_blank" rel="noopener">Chamar no WhatsApp</a>
+      </div>
+      <div class="hours-list">
+        <div class="hour-item reveal from-right"><span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF6B1A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Hamburgueria</span><b>18:00 <em>—</em> 22:00</b></div>
+        <div class="hour-item reveal from-right"><span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF6B1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M9 17h6l-3-7H8M14 6h3l2 6"/></svg>Delivery</span><b>até <em>22:45</em></b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== INSTAGRAM ========== -->
+<section class="section" style="padding-top:20px">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow reveal">@marcialburger</span>
+        <h2 data-split>Direto do nosso <span class="accent">Instagram</span></h2>
+      </div>
+      <a class="btn btn-ghost reveal from-right" href="https://www.instagram.com/marcialburger/" target="_blank" rel="noopener">Seguir no Instagram</a>
+    </div>
+    <div class="insta-grid" id="insta"></div>
+  </div>
+</section>
+
+<!-- ========== CTA FINAL ========== -->
+<section class="final" id="contato">
+  <div class="container">
+    <span class="eyebrow reveal">Peça agora</span>
+    <h2 data-split>Seu próximo burger<br><span class="accent">tá a um clique.</span></h2>
+    <p class="reveal" style="--d:.35s">Atendimento pelo WhatsApp. Escolhe, chama e pronto.</p>
+    <div class="hero-ctas reveal" style="--d:.5s">
+      <a class="btn btn-primary" href="https://contate.me/marcialburger" target="_blank" rel="noopener">Fazer pedido</a>
+      <a class="btn btn-link" href="#cardapio">Ver cardápio →</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-row">
+      <a href="#inicio" class="logo">
+        <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l4 3 5-6 5 6 4-3-2 9H5L3 7z"/><path d="M5 19h14"/></svg></span>
+        <span>MARCIAL <em>BURGER</em></span>
+      </a>
+      <div class="footer-links">
+        <a href="#cardapio">Cardápio</a>
+        <a href="#mais">Self-service</a>
+        <a href="#horario">Horários</a>
+        <a href="https://www.instagram.com/marcialburger/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://contate.me/marcialburger" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </div>
+    <div class="copy">
+      <span>© 2026 Marcial Hamburgueria e Açaí</span>
+      <span>Desenvolvido por João Fanini</span>
+    </div>
+  </div>
+</footer>
+
+<a class="float-cta" href="https://contate.me/marcialburger" target="_blank" rel="noopener" aria-label="Pedir pelo WhatsApp">
+  <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.4 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.3 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.7 1.2 1.6 2 1.1.9 2 1.2 2.3 1.4.3.1.4.1.6-.1l.8-1c.2-.3.4-.2.6-.1l2 .9c.3.1.5.2.5.3.1.2.1.7-.1 1.2z"/></svg>
+</a>
+
+<script>
+/* ============ DADOS — troque fotos, nomes e preços pelos reais ============ */
+const U = (id, w = 900) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
+
+const HERO = [
+  U('1568901346375-23c9450c58cd', 1100),
+  U('1553979459-d2229ba7433b', 1100),
+  U('1550547660-d9450f859349', 1100),
+  U('1571091718767-18b5b1457add', 1100)
+];
+
+const PRODUTOS = [
+  { cat:'burger', tag:'Mais pedido', nome:'Marcial Clássico', desc:'Pão brioche, blend 150g, queijo, alface, tomate e molho da casa.', preco:'24,90', img:U('1568901346375-23c9450c58cd') },
+  { cat:'burger', tag:'', nome:'Marcial Bacon', desc:'Blend 150g, cheddar, bacon crocante e cebola caramelizada.', preco:'29,90', img:U('1553979459-d2229ba7433b') },
+  { cat:'burger', tag:'', nome:'Duplo Smash', desc:'Dois smash 90g, cheddar em dobro, picles e molho especial.', preco:'32,90', img:U('1550547660-d9450f859349') },
+  { cat:'burger', tag:'Pra quem tem fome', nome:'Marcial Monster', desc:'Três carnes, presunto, ovo, bacon, queijo e salada completa.', preco:'42,90', img:U('1571091718767-18b5b1457add') },
+  { cat:'burger', tag:'', nome:'Frango Crispy', desc:'Frango empanado crocante, queijo, alface e maionese temperada.', preco:'26,90', img:U('1606755962773-d324e0a13086') },
+  { cat:'burger', tag:'', nome:'Cheddar Melt', desc:'Blend 150g coberto com cheddar cremoso e cebola crispy.', preco:'28,90', img:U('1572802419224-296b0aeee0d9') },
+  { cat:'burger', tag:'', nome:'Salada Especial', desc:'Blend 150g, queijo, presunto, ovo, alface, tomate e milho.', preco:'27,90', img:U('1586190848861-99aa4a171e90') },
+  { cat:'burger', tag:'Novo', nome:'Marcial Duplo', desc:'Duas carnes 150g, queijo prato, bacon e molho barbecue.', preco:'36,90', img:U('1594212699903-ec8a3eca50f5') },
+
+  { cat:'porcao', tag:'', nome:'Batata Frita', desc:'Porção crocante, sequinha e bem temperada.', preco:'19,90', img:U('1573080496219-bb080dd4f877') },
+  { cat:'porcao', tag:'Mais pedido', nome:'Batata Cheddar & Bacon', desc:'Batata frita coberta com cheddar cremoso e bacon.', preco:'29,90', img:U('1585109649139-366815a0d713') },
+  { cat:'porcao', tag:'', nome:'Frango a Passarinho', desc:'Frango frito no alho, crocante por fora e suculento.', preco:'34,90', img:U('1626082927389-6cd097cdc6ec') },
+  { cat:'porcao', tag:'', nome:'Anéis de Cebola', desc:'Onion rings empanados, servidos com molho da casa.', preco:'22,90', img:U('1639024471283-03518883512d') },
+
+  { cat:'acai', tag:'', nome:'Açaí 300ml', desc:'Açaí cremoso com até 3 acompanhamentos.', preco:'15,90', img:U('1590080875515-8a3a8dc5735e') },
+  { cat:'acai', tag:'Mais pedido', nome:'Açaí 500ml', desc:'Açaí cremoso com até 5 acompanhamentos.', preco:'21,90', img:U('1615478503562-ec2d8aa0e24e') },
+  { cat:'acai', tag:'', nome:'Açaí na Tigela', desc:'Tigela com frutas, granola, leite em pó e mel.', preco:'24,90', img:U('1511690743698-d9d85f2fbf38') },
+  { cat:'acai', tag:'Pra dividir', nome:'Barca de Açaí', desc:'Barca completa pra duas pessoas, com frutas e cremes.', preco:'44,90', img:U('1490474418585-ba9bad8fd0ea') },
+
+  { cat:'bebida', tag:'', nome:'Refrigerante Lata', desc:'350ml, várias opções geladinhas.', preco:'6,00', img:U('1554866585-cd94860890b7') },
+  { cat:'bebida', tag:'', nome:'Suco Natural', desc:'Feito na hora com a fruta do dia.', preco:'9,90', img:U('1600271886742-f049cd451bba') },
+  { cat:'bebida', tag:'Mais pedido', nome:'Milkshake', desc:'Chocolate, morango ou ovomaltine.', preco:'16,90', img:U('1572490122747-3968b75cc699') },
+  { cat:'bebida', tag:'', nome:'Refrigerante 2L', desc:'Pra acompanhar o combo da galera.', preco:'14,00', img:U('1622483767028-3f66f32aef97') }
+];
+
+const PAINEIS = [
+  { n:'01', t:'Self-service', d:'Comida caseira variada, do jeito que você gosta de montar o prato.', img:U('1512058564366-18510be2db19', 1000) },
+  { n:'02', t:'Marmitas', d:'Almoço completo e caprichado pra levar ou receber em casa.', img:U('1546069901-ba9599a7e63c', 1000) },
+  { n:'03', t:'Hambúrguer artesanal', d:'Carne no ponto, pão macio e muito recheio. À noite, é hora do burger.', img:U('1571091718767-18b5b1457add', 1000) },
+  { n:'04', t:'Porções', d:'Pra dividir com a galera, ou não dividir com ninguém.', img:U('1573080496219-bb080dd4f877', 1000) },
+  { n:'05', t:'Açaí', d:'Cremoso, gelado e do tamanho da sua vontade.', img:U('1590080875515-8a3a8dc5735e', 1000) },
+  { n:'06', t:'Bebidas', d:'Refri, suco e milkshake pra fechar o pedido.', img:U('1572490122747-3968b75cc699', 1000) }
+];
+
+const INSTA = [
+  U('1553979459-d2229ba7433b', 600),
+  U('1571091718767-18b5b1457add', 600),
+  U('1573080496219-bb080dd4f877', 600),
+  U('1590080875515-8a3a8dc5735e', 600)
+];
+
+/* ============ helpers ============ */
+const $ = s => document.querySelector(s);
+const img = (src, alt = '') => `<img src="${src}" alt="${alt}" loading="lazy" decoding="async" onerror="this.classList.add('broken')">`;
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isMobile = window.matchMedia('(max-width: 900px)').matches;
+let lenis = null;
+const WA = 'https://contate.me/marcialburger';
+
+/* ============ LOADER ============ */
+window.addEventListener('load', () => {
+  const t = reduce ? 100 : (isMobile ? 1900 : 2400);
+  setTimeout(() => {
+    document.body.classList.add('loaded');
+    document.body.classList.remove('locked');
+    if (!reduce && window.Lenis) {
+      lenis = new Lenis({ duration: 1.15, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true, anchors: { offset: -70 } });
+      const raf = time => { lenis.raf(time); requestAnimationFrame(raf); };
+      requestAnimationFrame(raf);
+    }
+    setTimeout(() => document.body.classList.add('ready'), reduce ? 0 : 350);
+  }, t);
+});
+// segurança: se alguma imagem travar o "load", libera mesmo assim
+setTimeout(() => {
+  if (!document.body.classList.contains('loaded')) {
+    document.body.classList.add('loaded', 'ready');
+    document.body.classList.remove('locked');
+  }
+}, 5000);
+
+/* ============ HEADER ============ */
+const header = $('#header');
+const links = document.querySelectorAll('.nav-links a');
+const navLinks = $('#navLinks');
+const setMenu = open => {
+  navLinks.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+  if (lenis) open ? lenis.stop() : lenis.start();
+};
+$('#menuToggle').addEventListener('click', () => setMenu(!navLinks.classList.contains('open')));
+links.forEach(a => a.addEventListener('click', () => setMenu(false)));
+
+/* ============ HERO: thumbs que trocam o burger ============ */
+const thumbs = $('#thumbs');
+thumbs.innerHTML = HERO.map((src, i) =>
+  `<div class="thumb-wrap ${i === 0 ? 'active' : ''}"><button class="thumb ph ${i === 0 ? 'active' : ''}" data-i="${i}" aria-label="Ver hambúrguer ${i + 1}">${img(src.replace('w=1100', 'w=200'))}</button></div>`
+).join('');
+let front = $('#heroA'), back = $('#heroB'), cur = 0, busy = false;
+thumbs.addEventListener('click', e => {
+  const b = e.target.closest('.thumb'); if (!b) return;
+  const i = +b.dataset.i; if (i === cur || busy) return;
+  busy = true; cur = i;
+  document.querySelectorAll('.thumb-wrap').forEach((w, k) => {
+    w.classList.toggle('active', k === i);
+    w.firstElementChild.classList.toggle('active', k === i);
+  });
+  back.src = HERO[i];
+  back.classList.remove('broken');
+  back.onerror = () => back.classList.add('broken');
+  requestAnimationFrame(() => {
+    back.classList.remove('out');
+    front.classList.add('out');
+    [front, back] = [back, front];
+    setTimeout(() => busy = false, 600);
+  });
+});
+$('#heroA').onerror = function(){ this.classList.add('broken') };
+
+/* sementes flutuando */
+const hv = $('#heroVisual');
+if (!reduce) {
+  for (let i = 0; i < (isMobile ? 8 : 14); i++) {
+    const s = document.createElement('span');
+    s.className = 'seed';
+    const ang = Math.random() * Math.PI * 2, r = 42 + Math.random() * 10;
+    s.style.left = 50 + Math.cos(ang) * r + '%';
+    s.style.top = 50 + Math.sin(ang) * r + '%';
+    s.style.animationDelay = (-Math.random() * 6) + 's';
+    s.style.animationDuration = (5 + Math.random() * 4) + 's';
+    s.dataset.depth = (0.4 + Math.random() * 1.2).toFixed(2);
+    hv.appendChild(s);
+  }
+  // parallax com o mouse
+  const heroImg = $('#heroImg');
+  window.addEventListener('mousemove', e => {
+    if (!document.body.classList.contains('ready')) return;
+    const x = (e.clientX / innerWidth - .5), y = (e.clientY / innerHeight - .5);
+    heroImg.style.transform = `translate(${x * -14}px, ${y * -14}px)`;
+    hv.querySelectorAll('.seed').forEach(s => {
+      const d = s.dataset.depth;
+      s.style.translate = `${x * 40 * d}px ${y * 40 * d}px`;
+    });
+  });
+}
+
+/* ============ CARDÁPIO ============ */
+const grid = $('#grid');
+function render(cat) {
+  grid.innerHTML = PRODUTOS.filter(p => p.cat === cat).map((p, i) => `
+    <article class="card" style="animation-delay:${i * 60}ms">
+      <div class="ph">${p.tag ? `<span class="card-tag">${p.tag}</span>` : ''}${img(p.img, p.nome)}</div>
+      <div class="card-body">
+        <h3>${p.nome}</h3>
+        <p>${p.desc}</p>
+        <div class="card-foot">
+          <span class="price"><small>R$</small>${p.preco}</span>
+          <a class="add" href="${WA}" target="_blank" rel="noopener" aria-label="Pedir ${p.nome}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          </a>
+        </div>
+      </div>
+    </article>`).join('');
+}
+render('burger');
+$('#tabs').addEventListener('click', e => {
+  const t = e.target.closest('.tab'); if (!t) return;
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+  render(t.dataset.cat);
+});
+
+/* ============ SCROLL HORIZONTAL ============ */
+const hs = $('#mais'), track = $('#hsTrack'), bar = $('#hsBar');
+track.innerHTML = PAINEIS.map(p => `
+  <article class="panel">
+    <div class="ph">${img(p.img, p.t)}</div>
+    <span class="panel-num">${p.n}</span>
+    <div class="panel-body"><h3>${p.t}</h3><p>${p.d}</p></div>
+  </article>`).join('');
+let dist = 0;
+const panels = [...track.querySelectorAll('.panel')];
+let secTops = [];
+function sizeHS() {
+  dist = Math.max(0, track.scrollWidth - innerWidth);
+  hs.style.height = (innerHeight + dist) + 'px';
+  secTops = sections.filter(Boolean).map(s => [s.id, s.offsetTop]);
+}
+
+/* ============ INSTAGRAM ============ */
+$('#insta').innerHTML = INSTA.map(src =>
+  `<a class="ph clip" href="https://www.instagram.com/marcialburger/" target="_blank" rel="noopener" aria-label="Post no Instagram">${img(src)}</a>`
+).join('');
+
+/* ============ SCROLL: header, parallax, horizontal, nav ativa ============ */
+const heroCopy = $('#heroCopy'), heroVis = $('#heroVisual');
+const sections = ['inicio','cardapio','mais','horario','contato'].map(id => document.getElementById(id));
+let ticking = false;
+function onScroll() {
+  const y = scrollY;
+  header.classList.toggle('scrolled', y > 30);
+
+  if (!reduce && !isMobile && y < innerHeight * 1.2) {
+    heroVis.style.transform = `translateY(${y * .18}px)`;
+    heroCopy.style.transform = `translateY(${y * .08}px)`;
+    heroCopy.style.opacity = Math.max(0, 1 - y / (innerHeight * .75));
+  }
+
+  const r = hs.getBoundingClientRect();
+  const p = Math.min(1, Math.max(0, -r.top / (hs.offsetHeight - innerHeight || 1)));
+  track.style.transform = `translateX(${-p * dist}px)`;
+  bar.style.width = (p * 100) + '%';
+  panels.forEach(el => {
+    const b = el.getBoundingClientRect();
+    const c = (b.left + b.width / 2 - innerWidth / 2) / innerWidth;
+    el.style.setProperty('--px', (c * -60).toFixed(1) + 'px');
+    if (b.left < innerWidth * .85 && r.top < innerHeight * .5) el.classList.add('seen');
+  });
+
+  let current = 'inicio';
+  secTops.forEach(([id, top]) => { if (y + innerHeight * .4 > top) current = id; });
+  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+  ticking = false;
+}
+window.addEventListener('scroll', () => { if (!ticking) { requestAnimationFrame(onScroll); ticking = true; } }, { passive:true });
+let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { sizeHS(); onScroll(); }, 120); });
+window.addEventListener('load', () => { sizeHS(); onScroll(); });
+sizeHS(); onScroll();
+
+/* ============ TÍTULOS PALAVRA POR PALAVRA ============ */
+document.querySelectorAll('[data-split]').forEach(h => {
+  let i = 0;
+  const walk = node => {
+    [...node.childNodes].forEach(n => {
+      if (n.nodeType === 3) {
+        const frag = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(part => {
+          if (!part) return;
+          if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(' ')); return; }
+          const w = document.createElement('span'); w.className = 'w';
+          const inner = document.createElement('span'); inner.textContent = part; inner.style.setProperty('--i', i++);
+          w.appendChild(inner); frag.appendChild(w);
+        });
+        n.replaceWith(frag);
+      } else if (n.nodeType === 1 && n.tagName !== 'BR') walk(n);
+    });
+  };
+  walk(h); h.classList.add('split');
+});
+document.querySelectorAll('.hours-list .reveal').forEach((el, i) => el.style.setProperty('--d', (.25 + i * .15) + 's'));
+
+/* ============ REVEAL ============ */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+}, { threshold:.15 });
+document.querySelectorAll('.reveal,.split,.clip,.bar-in').forEach(el => io.observe(el));
+document.querySelectorAll('#insta .clip').forEach((el, i) => el.style.setProperty('--d', (i * .12) + 's'));
+io.observe(grid);
+</script>
+</body>
+</html>
